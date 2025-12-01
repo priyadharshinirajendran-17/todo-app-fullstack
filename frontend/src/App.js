@@ -12,10 +12,8 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [search, setSearch] = useState("");
 
-  //  Your Render Backend URL
-const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
-
-
+  // Render backend URL
+  const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
 
   useEffect(() => {
     fetchTodos();
@@ -24,9 +22,10 @@ const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
   const fetchTodos = async () => {
     try {
       const res = await axios.get(apiUrl);
-      setTodos(res.data);
+      setTodos(res.data || []); // prevent crash if undefined
     } catch (error) {
-      console.error("Error fetching todos", error);
+      console.error("❌ Error fetching todos:", error.message);
+      setTodos([]); // prevent UI from going blank
     }
   };
 
@@ -40,18 +39,23 @@ const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
       resetForm();
       fetchTodos();
     } catch (error) {
-      console.error("Error adding todo", error);
+      console.error("❌ Error adding todo:", error.message);
     }
   };
 
   const updateTodo = async () => {
     if (!editId) return;
     try {
-      await axios.put(`${apiUrl}/${editId}`, { task, date, venue, status });
+      await axios.put(`${apiUrl}/${editId}`, {
+        task,
+        date,
+        venue,
+        status,
+      });
       resetForm();
       fetchTodos();
     } catch (error) {
-      console.error("Error updating todo", error);
+      console.error("❌ Error updating todo:", error.message);
     }
   };
 
@@ -61,7 +65,7 @@ const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
         await axios.delete(`${apiUrl}/${id}`);
         fetchTodos();
       } catch (error) {
-        console.error("Error deleting todo", error);
+        console.error("❌ Error deleting todo:", error.message);
       }
     }
   };
@@ -93,7 +97,7 @@ const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
       </nav>
 
       <div className="container mt-5">
-        {/* 🔎 Search bar */}
+        {/* Search bar */}
         <input
           type="text"
           className="form-control mb-4"
@@ -174,6 +178,7 @@ const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
         {/* Todo List */}
         <div className="card p-4 shadow">
           <h5 className="text-center fw-bold mb-3">📋 Todo List</h5>
+
           <table className="table table-hover table-bordered">
             <thead className="table-dark">
               <tr>
