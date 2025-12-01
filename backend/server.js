@@ -8,15 +8,16 @@ app.use(cors());
 app.use(express.json());
 
 // Connect DB
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-// Schema
+// Schema FIXED
 const TodoSchema = new mongoose.Schema({
-  title: String,
-  completed: Boolean,
+  task: { type: String, required: true },
+  date: { type: String, required: true },
+  venue: { type: String, required: true },
+  status: { type: String, default: "pending" }
 });
 
 const Todo = mongoose.model("Todo", TodoSchema);
@@ -28,7 +29,8 @@ app.get("/todos", async (req, res) => {
 });
 
 app.post("/todos", async (req, res) => {
-  const todo = await Todo.create(req.body);
+  const { task, date, venue, status } = req.body;
+  const todo = await Todo.create({ task, date, venue, status });
   res.json(todo);
 });
 
