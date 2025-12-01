@@ -12,8 +12,9 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [search, setSearch] = useState("");
 
-  // 🔥 Your Render Backend URL
- const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
+  //  Your Render Backend URL
+const apiUrl = "https://todo-app-fullstack-backend-2yjb.onrender.com/todos";
+
 
 
   useEffect(() => {
